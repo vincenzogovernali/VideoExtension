@@ -1,0 +1,14 @@
+{
+  "name": "Video Setting",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "author": "BruzzuBabbarebbe",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs"
+  ]
+}
