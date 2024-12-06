@@ -4,14 +4,8 @@ window.onload = (event) => {
         let tabId = tabs[0].id;
         chrome.scripting.executeScript({
             target: {tabId: tabId},
-            function: () => {
-                let videos = document.getElementsByTagName("video");
-                for (let i = 0; i < videos.length; i++) {
-                    if( videos[i]['innerHTML'] !== undefined && videos[i]['innerHTML'].length > 0 && (videos[i]['innerHTML'].includes("http:") || videos[i]['innerHTML'].includes("https:"))) {
-                        videos[i].requestPictureInPicture();
-                    }
-                }
-            }
+            function: checkVideo,
+            args: [0],
         }).then(() => console.log("Injected PiP function"));
     });
 
@@ -20,14 +14,8 @@ window.onload = (event) => {
         let tabId = tabs[0].id;
         chrome.scripting.executeScript({
             target: {tabId: tabId},
-            function:  () => {
-                let videos = document.getElementsByTagName("video");
-                for (let i = 0; i < videos.length; i++) {
-                    if( videos[i]['innerHTML'] !== undefined && videos[i]['innerHTML'].length > 0 && (videos[i]['innerHTML'].includes("http:") || videos[i]['innerHTML'].includes("https:"))) {
-                        videos[i].style.setProperty("object-fit", "fill");
-                    }
-                }
-            }
+            function: checkVideo,
+            args: [1]
         }).then(() => console.log("Injected stretch function"));
     });
 
@@ -36,16 +24,32 @@ window.onload = (event) => {
         let tabId = tabs[0].id;
         chrome.scripting.executeScript({
             target: {tabId: tabId},
-            function:  () => {
-                let videos = document.getElementsByTagName("video");
-                for (let i = 0; i < videos.length; i++) {
-                    if( videos[i]['innerHTML'] !== undefined && videos[i]['innerHTML'].length > 0 && (videos[i]['innerHTML'].includes("http:") || videos[i]['innerHTML'].includes("https:"))) {
-                        videos[i].style.removeProperty("object-fit");
-                    }
-                }
-            }
+            function: checkVideo,
+            args: [2]
         }).then(() => console.log("Injected reset stretch function"));
     });
+
+
+    function checkVideo(value) {
+        let videos = document.getElementsByTagName("video");
+        console.log(videos);
+        for (let i = 0; i < videos.length; i++) {
+            if ((videos[i]['innerHTML'] !== undefined && videos[i]['innerHTML'].length > 0 && (videos[i]['innerHTML'].includes("http:") || videos[i]['innerHTML'].includes("https:"))) || (videos[i]['src'] !== undefined && (videos[i]['src'].includes("https:") || videos[i]['src'].includes("http:")))) {
+                switch (value) {
+                    case 0:
+                        videos[i].requestPictureInPicture();
+                        break;
+                    case 1:
+                        videos[i].style.setProperty("object-fit", "fill");
+                        break;
+                    default:
+                        videos[i].style.removeProperty("object-fit");
+                        break;
+                }
+            }
+        }
+        return true;
+    }
 
 
 
